@@ -104,8 +104,11 @@ Existem duas formas:
 
 **Cenários críticos automatizados**
 * Criar carrinho com sucesso ⭐
+  * _Motivo da escolha:_ Este é o fluxo principal do módulo de carrinhos. Garantir que um carrinho possa ser criado corretamente é essencial, pois afeta diretamente a jornada de compra. É o cenário que mais valida regras combinadas: autenticação, vínculo com usuário, estrutura dos produtos e disponibilidade em estoque.
 * Criar carrinho quando já existe outro (Pode falhar caso não tenha carrinho criado) ⭐
+  * _Motivo da escolha:_ Este comportamento é uma regra crítica de negócio, então validar o bloqueio é tão importante quanto validar o sucesso. Previnir a criação repetida evita inconsistências de estoque e duplicação de compras.
 * [PARA TESTE] Cancelar compra do carrinho (carrinho é removido)
+  * _Motivo da criação:_ Este teste foi incluído como apoio técnico. Ele garante que o ambiente de testes possa ser limpo entre execuções, evitando que um carrinho remanescente impeça a validação dos cenários principais.
 
 ### Login
 **Cenários levantados**
@@ -121,7 +124,9 @@ Existem duas formas:
 
 **Cenários críticos automatizados**
 * Login com credenciais válidas ⭐
+  * _Motivo da escolha:_ Este é o ponto de entrada de praticamente todas as outras funcionalidades. Sem autenticação válida, carrinhos, produtos e usuários não podem ser manipulados de forma completa. Por isso, é um dos cenários mais críticos de toda a API.
 * Login com senha inválida ⭐
+  * _Motivo da escolha:_Este cenário garante que a API valida credenciais incorretas corretamente e que não libera tokens indevidamente, prevenindo riscos de segurança. Também assegura que mensagens de erro e status code estejam adequados.
 
 ### Produtos
 **Cenários levantados**
@@ -148,7 +153,9 @@ Existem duas formas:
 
 **Cenários críticos automatizados**
 * Cadastrar produto com sucesso ⭐
+  * _Motivo da escolha:_ Muitos testes dependem de produtos válidos, e falhas nesse ponto impactam carrinhos e todo fluxo de compra. Também é crítico validar regras de campos obrigatórios e estrutura básica.
 * Cadastrar produto com nome duplicado ⭐
+  * _Motivo da escolha:_ A unicidade do nome do produto é uma regra essencial da API. Esse cenário garante integridade do catálogo e evita erros como sobreposição de itens, confusão no estoque e falhas de consistência.
 
 ### Usuários
 **Cenários levantados**
@@ -170,7 +177,9 @@ Existem duas formas:
 
 **Cenários críticos automatizados**
 * Criar usuário com sucesso ⭐
+  * _Motivo da escolha:_ Esse cenário valida cadastro básico, estrutura do payload, criação de ID e resposta correta. Impacta diretamente fluxos de login, carrinho e até criação de produtos.
 * Criar usuário com email já existente ⭐
+  * _Motivo da escolha:_ Como email é o identificador principal do usuário, este é um cenário vital para consistência da base. Garantir que usuários não possam ser duplicados previne falhas graves como problemas de autenticação, segurança, sobrescrita de dados e inconsistência de tokens.
 
 
 **Todos os testes são:**
