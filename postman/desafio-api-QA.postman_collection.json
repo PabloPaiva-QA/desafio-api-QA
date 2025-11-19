@@ -1,0 +1,535 @@
+{
+	"info": {
+		"_postman_id": "d8209d08-6f2f-42ea-98e5-0fc7dcaee135",
+		"name": "desafio-api-QA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19906543"
+	},
+	"item": [
+		{
+			"name": "Carrinho",
+			"item": [
+				{
+					"name": "Criar carrinho com sucesso",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();",
+									"",
+									"const expectedStatus = 201;",
+									"pm.test(\"Status code: \" + expectedStatus, function(){",
+									"    pm.response.to.have.status(expectedStatus);",
+									"});",
+									"",
+									"pm.test(\"Carrinho criado\", function(){",
+									"    pm.expect(json.message).to.equal(\"Cadastro realizado com sucesso\");",
+									"});",
+									"",
+									"pm.environment.set(\"idCarrinho\", json._id);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"produtos\": [\n    {\n      \"idProduto\": \"{{idProduto}}\",\n      \"quantidade\": 1\n    }\n  ]\n}\n"
+						},
+						"url": {
+							"raw": "https://serverest.dev/carrinhos",
+							"protocol": "https",
+							"host": [
+								"serverest",
+								"dev"
+							],
+							"path": [
+								"carrinhos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar carrinho quando já existe outro (Pode falhar caso não tenha carrinho criado)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();",
+									"",
+									"const expectedStatus = 400;",
+									"pm.test(\"Status code: \" + expectedStatus, function(){",
+									"    pm.response.to.have.status(expectedStatus);",
+									"});",
+									"",
+									"pm.test(\"A mensagem recebida foi: \" + json.message, function(){",
+									"    const mensagensValidas = [",
+									"    \"Não é permitido possuir produto duplicado\",",
+									"    \"Não é permitido ter mais de 1 carrinho\"// ,",
+									"    // \"Produto não encontrado\",",
+									"    // \"Produto não possui quantidade suficiente\"",
+									"    ];",
+									"    pm.expect(json.message).to.be.oneOf(mensagensValidas);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"produtos\": [\n    {\n      \"idProduto\": \"{{idProduto}}\",\n      \"quantidade\": 1\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "https://serverest.dev/carrinhos",
+							"protocol": "https",
+							"host": [
+								"serverest",
+								"dev"
+							],
+							"path": [
+								"carrinhos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[PARA TESTE] Cancelar compra do carrinho (carrinho é removido)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();\r",
+									"\r",
+									"const expectedStatus = 200;\r",
+									"pm.test(\"Status code: \" + expectedStatus, function(){\r",
+									"    pm.response.to.have.status(expectedStatus);\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"idCarrinho\", json._id);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://serverest.dev/carrinhos/cancelar-compra",
+							"protocol": "https",
+							"host": [
+								"serverest",
+								"dev"
+							],
+							"path": [
+								"carrinhos",
+								"cancelar-compra"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login com credenciais válidas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();",
+									"",
+									"const expectedStatus = 200;",
+									"pm.test(\"Status code: \" + expectedStatus, function(){",
+									"    pm.response.to.have.status(expectedStatus);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Login realizado com sucesso!\", function(){",
+									"    pm.expect(json.authorization).to.exist;",
+									"    pm.environment.set(\"token\", json.authorization);",
+									"    console.log(\"Token: \" + json.authorization);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"fulano@qa.com\",\r\n    \"password\": \"teste\"\r\n}"
+						},
+						"url": {
+							"raw": "https://serverest.dev/login",
+							"protocol": "https",
+							"host": [
+								"serverest",
+								"dev"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login com senha inválida",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();",
+									"",
+									"const expectedStatus = 401;",
+									"pm.test(\"Status code: \" + expectedStatus, function(){",
+									"    pm.response.to.have.status(expectedStatus);",
+									"});",
+									"",
+									"pm.test(\"Email e/ou senha inválidos\", function(){",
+									"    pm.expect(json.message).to.equal(\"Email e/ou senha inválidos\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"invaliduser@gmail.com\",\r\n    \"password\": \"wrongpassword\"\r\n}"
+						},
+						"url": {
+							"raw": "https://serverest.dev/login",
+							"protocol": "https",
+							"host": [
+								"serverest",
+								"dev"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Produtos",
+			"item": [
+				{
+					"name": "Cadastrar produto com sucesso",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"timestamp\", Date.now());"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();",
+									"",
+									"const body = JSON.parse(pm.request.body.raw);",
+									"",
+									"const expectedStatus = 201;",
+									"pm.test(\"Status code: \" + expectedStatus, function(){",
+									"    pm.response.to.have.status(expectedStatus);",
+									"});",
+									"",
+									"pm.test(`Produto ${body.nome} criado`, function(){",
+									"    pm.expect(json.message).to.equal(\"Cadastro realizado com sucesso\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Logitech MX Vertical {{timestamp}}\",\n    \"preco\": 470,\n    \"descricao\": \"Mouse\",\n    \"quantidade\": 381\n}"
+						},
+						"url": {
+							"raw": "https://serverest.dev/produtos",
+							"protocol": "https",
+							"host": [
+								"serverest",
+								"dev"
+							],
+							"path": [
+								"produtos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cadastrar produto com nome duplicado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();",
+									"",
+									"const expectedStatus = 400;",
+									"pm.test(\"Status code: \" + expectedStatus, function(){",
+									"    pm.response.to.have.status(expectedStatus);",
+									"});",
+									"",
+									"pm.test(\"Já existe produto com esse nome\", function(){",
+									"    pm.expect(json.message).to.equal(\"Já existe produto com esse nome\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"nome\": \"Logitech MX Vertical\",\n   \"preco\": 470,\n   \"descricao\": \"Mouse\",\n   \"quantidade\": 10\n}"
+						},
+						"url": {
+							"raw": "https://serverest.dev/produtos",
+							"protocol": "https",
+							"host": [
+								"serverest",
+								"dev"
+							],
+							"path": [
+								"produtos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuários",
+			"item": [
+				{
+					"name": "Criar usuário com sucesso",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"timestamp\", Date.now());"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();",
+									"",
+									"const body = JSON.parse(pm.request.body.raw);",
+									"",
+									"const expectedStatus = 201;",
+									"pm.test(\"Status code: \" + expectedStatus, function(){",
+									"    pm.response.to.have.status(expectedStatus);",
+									"});",
+									"",
+									"pm.test(\"Cadastro realizado com sucesso!\", function (){",
+									"    pm.expect(json.message).to.equal(\"Cadastro realizado com sucesso\");",
+									"    console.log(`Nome: ${body.nome}`)",
+									"    console.log(`E-mail: ${body.email}`)",
+									"    console.log(`Senha: ${body.password}`)",
+									"    console.log(`Administrador: ${body.administrador}`)",
+									"});",
+									"",
+									"pm.environment.set(\"idUsuario\", json._id);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"nome\": \"Teste Pablo\",\n   \"email\": \"usuario_{{timestamp}}@teste.com\",\n   \"password\": \"12345678\",\n   \"administrador\": \"false\"\n}"
+						},
+						"url": {
+							"raw": "https://serverest.dev/usuarios",
+							"protocol": "https",
+							"host": [
+								"serverest",
+								"dev"
+							],
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar usuário com email existente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();",
+									"",
+									"const expectedStatus = 400;",
+									"pm.test(\"Status code: \" + expectedStatus, function(){",
+									"    pm.response.to.have.status(expectedStatus);",
+									"});",
+									"",
+									"pm.test(\"Este email já está sendo usado!\", function(){",
+									"    pm.expect(json.message).to.equal(\"Este email já está sendo usado\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"nome\": \"Fulano\",\n   \"email\": \"fulano@qa.com\",\n   \"password\": \"1234\",\n   \"administrador\": \"false\"\n}"
+						},
+						"url": {
+							"raw": "https://serverest.dev/usuarios",
+							"protocol": "https",
+							"host": [
+								"serverest",
+								"dev"
+							],
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
